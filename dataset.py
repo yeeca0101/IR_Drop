@@ -79,15 +79,20 @@ class CustomDataset(Dataset):
         pdn_density = F.interpolate(pdn_density, size=self.target_size, mode='bilinear', align_corners=False).squeeze(0)
         ir_drop = F.interpolate(ir_drop, size=self.target_size, mode='bilinear', align_corners=False).squeeze(0)
             
+        current = current/current.max()
+        eff_dist = eff_dist/eff_dist.max()
+        pdn_density = pdn_density/pdn_density.max()
+        ir_drop = ir_drop/ir_drop.max()
+            
         # input_data = {
         #     'current':current ,
         #     'eff_dist': eff_dist,
         #     'pdn_density': pdn_density
         # }
         input_data = torch.stack([current, eff_dist, pdn_density], dim=0)
-        input_data=input_data[:,0,:,:] # 3,256,256
+        input_data=input_data[:,0,:,:] # 3,256,256 
         target = ir_drop
-        input_data,target = self.norm_transform(input_data,target)
+        # input_data,target = self.norm_transform(input_data,target)
 
         return input_data, target
 
